@@ -36,6 +36,7 @@ int insert(node* table[], char str[], int scope)
         sum += str[i] - '\0';
     }
     hash = (int)sum % 31;
+    printf("hash: %d\n", hash);
 
     // insert the string
     head = table[hash];
@@ -44,11 +45,12 @@ int insert(node* table[], char str[], int scope)
         head->next = NULL;
     }
     else {
-        head->next = curr;
-        curr->next = NULL;
+        curr->next = head;
+        head = curr;
     }
-    strcpy(head->val, str);
-    head->scopeId = scope;
+    table[hash] = head;
+    strcpy(table[hash]->val, str);
+    table[hash]->scopeId = scope;
 
     // insert successful
     return 0;
@@ -69,15 +71,16 @@ int main()
 
 
     // test insert one
-    if (insert(symTable, "hello", 0) == 0)
-        printf("Inserted.\n");
+    insert(symTable, "hello", 0);
+    insert(symTable, "hello", 1);
 
-    // print out values
     for (i = 0; i < 31; i++) {
-        if (symTable[i] != NULL) {
-            printf("%s, %d\n", symTable[i]->val, symTable[i]->scopeId);
+        while (symTable[i] != NULL) {
+            printf("val: %s\n", symTable[i]->val);
+            printf("scope: %d\n", symTable[i]->scopeId);
+            symTable[i] = symTable[i]->next;
         }
-    }
+	}
 
 	return 0;
 }
