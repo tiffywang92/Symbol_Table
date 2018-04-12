@@ -97,29 +97,21 @@ int insert(node* table[], int scope, char str[])
 
     node* head;                         // to mark head of a chain
     node* curr = malloc(sizeof(node));  // to mark new node
-    int i, hash;
+    int i, j, hash;
+    int length = sizeof(str);           // length of string
     int sum = 0;                        // hold a sum for hash
-    //int countdown = sizeof(str);
-    //double sum = 0.0;
+    int product = 1;                    // hold a product for exponents
 
     // hash method using the 128-base formula
-//    for (i = 0; i < sizeof(str); i++) {
-//        sum += atof(str[i]) * pow(128.0, (double)countdown);
-//        countdown--;
-//    }
-
-    // alt hash method
-//    for (i = 0; i < sizeof(str); i++) {
-//        sum += atof(str[i]) * pow(31.0, (double)countdown);
-//        countdown--;
-//    }
-
-    // working hash method
-    for (i = 0; i < sizeof(str); i++) {
-        sum += str[i] - '\0';
+    for (i = 0; i < length; i++) {
+        for (j = length; j > 0; j--) {   // count down number of times
+            // to multiply base 128
+            product *= 128;
+        }
+        // and sum up
+        sum += (str[i] - '\0') * product;
     }
     hash = (int)sum % 31;
-    //printf("hash: %d\n", hash);
 
     // insert the string
     head = table[hash];
@@ -155,31 +147,15 @@ int main()
         symTable[i] = NULL;
 	}
 
-    // test insert one
-//    insert(symTable, "hello", 0);
-//    insert(symTable, "hello", 1);
-//    insert(symTable, "ayy", 0);
-//
-//    for (i = 0; i < 31; i++) {
-//        while (symTable[i] != NULL) {
-//            printf("val: %s\n", symTable[i]->val);
-//            printf("scope: %d\n", symTable[i]->scopeId);
-//            symTable[i] = symTable[i]->next;
-//        }
-//	}
-
     // loop through input file
+    printf("Processing input file...\n\n");
     while (fscanf(fin, "%s", buffer) != EOF) {  // while not end of file
-        if (strcmp(buffer, "{") == 0) {         // if OPEN new scope
-            // start a block
+        // if OPEN, count new scope
+        if (strcmp(buffer, "{") == 0 || strcmp(buffer, "OPEN") == 0)
             ++scopeCount;
-            //
-        }
-        else if (strcmp(buffer, "}") == 0) {    // if CLOSE current scope
-            // end a block
-            //
+        // if CLOSE current scope, return to previous scope
+        else if (strcmp(buffer, "}") == 0 || strcmp(buffer, "CLOSE") == 0)
             --scopeCount;
-        }
         else {                                  // all else are string values
             // process strings
             excep = find_in_current_scope(symTable, tableSize, scopeCount, buffer);
@@ -192,6 +168,7 @@ int main()
     }
 
     // print out symbol table
+    printf("\n\n");
     display(symTable, tableSize);
 
 	return 0;
