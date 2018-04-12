@@ -3,23 +3,104 @@
 #include "string.h"
 #include "math.h"
 
+// Global variables
 typedef struct node {
     char val[100];
 	int scopeId;
 	struct node* next;
 } node;
 
-int insert(node* table[], char str[], int scope)
+const int tableSize = 31;
+
+
+void display(struct node* array[], int arraySize)
 {
+      struct node* nodeptr;
+      int i;
+
+      for(i = 0; i < arraySize; i++)
+      {
+            printf("[%d]", i);
+            if(array[i] != NULL)
+            {
+                  nodeptr = array[i];
+                  while(nodeptr != NULL)
+                  {
+                        printf("[%s %d] ", nodeptr->val, nodeptr->scopeId);
+
+                        nodeptr = nodeptr->next;
+                  }
+            }
+            printf("\n");
+      }
+}
+
+void find_in_all_scopes(struct node* array[], int arraySize, char str[])
+{
+      struct node* nodeptr;
+      int i;
+
+      for(i = 0; i < arraySize; i++)
+      {
+            printf("[%d]", i);
+            if(array[i] != NULL)
+            {
+                  nodeptr = array[i];
+                  while(nodeptr != NULL)
+                  {
+                        if(!strcmp(nodeptr->val, str))
+                        {
+                            printf("[%s %d] ", nodeptr->val, nodeptr->scopeId);
+                        }
+
+                        nodeptr = nodeptr->next;
+                  }
+            }
+            printf("\n");
+      }
+}
+
+int find_in_current_scope(struct node* array[], int arraySize, int currentScope, char str[])
+{
+      struct node* nodeptr;
+      int i, index = 0;
+
+      for(i = 0; i < arraySize; i++)
+      {
+            if(array[i] != NULL)
+            {
+                  nodeptr = array[i];
+                  while(nodeptr != NULL)
+                  {
+                      ++index;
+                        if(nodeptr->scopeId == currentScope /*&& !strcmp(nodeptr->val, str)*/)
+                        {
+                            if(strcmp(nodeptr->val, str) == 0)
+                            {
+                                return index;   // place along linked list
+                            }
+                        }
+
+                        nodeptr = nodeptr->next;
+                  }
+            }
+
+      }
+      return 0;
+}
+
+int insert(node* table[], int scope, char str[])
+{
+    // check if string is empty
     if (str == NULL)
         return -1;
-    /*if (find(table, str, scope))
-        return -2;*/
 
-    node* head, *curr = malloc(sizeof(node));
-    int i, hash, countdown = sizeof(str);
+    node* head;                         // to mark head of a chain
+    node* curr = malloc(sizeof(node));  // to mark new node
+    int i, hash;
+    int sum = 0;                        // hold a sum for hash
+    //int countdown = sizeof(str);
     //double sum = 0.0;
-    int sum = 0;
 
     // hash method using the 128-base formula
 //    for (i = 0; i < sizeof(str); i++) {
@@ -32,11 +113,13 @@ int insert(node* table[], char str[], int scope)
 //        sum += atof(str[i]) * pow(31.0, (double)countdown);
 //        countdown--;
 //    }
+
+    // working hash method
     for (i = 0; i < sizeof(str); i++) {
         sum += str[i] - '\0';
     }
     hash = (int)sum % 31;
-    printf("hash: %d\n", hash);
+    //printf("hash: %d\n", hash);
 
     // insert the string
     head = table[hash];
@@ -58,29 +141,58 @@ int insert(node* table[], char str[], int scope)
 
 int main()
 {
-    //FILE* fin = fopen("p0input.txt", "r");
-    node* symTable[31];
-	//bool curr = false;
-	int i, j;
+    FILE* fin;                  // input file
+    node* symTable[31];         // hash table/array
+	int i;                      // increment
+	int scopeCount = 0;         // counter for scopes
+	int excep;                  // to handle exceptions
+	char buffer[100];           // string to hold read-in data
 
+	fin = fopen("p0input.txt", "r");
+
+	// initialize all pointers in table
 	for (i = 0; i < 31; i++) {
         symTable[i] = NULL;
 	}
 
-    // loop through input file
-
-
     // test insert one
-    insert(symTable, "hello", 0);
-    insert(symTable, "hello", 1);
+//    insert(symTable, "hello", 0);
+//    insert(symTable, "hello", 1);
+//    insert(symTable, "ayy", 0);
+//
+//    for (i = 0; i < 31; i++) {
+//        while (symTable[i] != NULL) {
+//            printf("val: %s\n", symTable[i]->val);
+//            printf("scope: %d\n", symTable[i]->scopeId);
+//            symTable[i] = symTable[i]->next;
+//        }
+//	}
 
-    for (i = 0; i < 31; i++) {
-        while (symTable[i] != NULL) {
-            printf("val: %s\n", symTable[i]->val);
-            printf("scope: %d\n", symTable[i]->scopeId);
-            symTable[i] = symTable[i]->next;
+    // loop through input file
+    while (fscanf(fin, "%s", buffer) != EOF) {  // while not end of file
+        if (strcmp(buffer, "{") == 0) {         // if OPEN new scope
+            // start a block
+            ++scopeCount;
+            //
         }
-	}
+        else if (strcmp(buffer, "}") == 0) {    // if CLOSE current scope
+            // end a block
+            //
+            --scopeCount;
+        }
+        else {                                  // all else are string values
+            // process strings
+            excep = find_in_current_scope(symTable, tableSize, scopeCount, buffer);
+            if (excep > 0)
+                printf("Duplicate found. Nothing inserted.\n");
+            excep = insert(symTable, scopeCount, buffer);
+            if (excep == -1)
+                printf("Empty string found. Nothing inserted.\n");
+        }
+    }
+
+    // print out symbol table
+    display(symTable, tableSize);
 
 	return 0;
 }
