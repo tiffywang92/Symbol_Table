@@ -52,31 +52,36 @@ void find_in_all_scopes(struct node* array[], int arraySize, char str[])
       }    
 }
 
-void find_in_current_scope(struct node* array[], int arraySize, int currentScope)
+int find_in_current_scope(struct node* array[], int arraySize, int currentScope, char str[])
 {
       struct node* nodeptr;
       for(int i = 0; i < arraySize; i++)
       {
-            printf("[%d]", i);
             if(array[i] != NULL)
             {
                   nodeptr = array[i];
                   while(nodeptr != NULL)
                   {
-                        if(nodeptr->scopeId == currentScope)
+                        if(nodeptr->scopeId == currentScope /*&& !strcmp(nodeptr->val, str)*/)
                         {
-                            printf("[%s %d] ", nodeptr->val, nodeptr->scopeId);
+                            if(strcmp(nodeptr->val, str) == 0)
+                            {
+                                return 1;
+                            }
                         }
                         
                         nodeptr = nodeptr->next;
                   }
             }
-            printf("\n");
+            
       }    
+      return 0;
 }
 
 int insert(node* table[], char str[], int scope)
 {
+    
+    
     if (str == NULL)
         return -1;
     /*if (find(table, str, scope))
@@ -106,6 +111,28 @@ int insert(node* table[], char str[], int scope)
 
     // insert the string
     head = table[hash];
+    
+    //printf("%d", hash);
+    /*
+    struct node* nodeptr;
+    nodeptr = table[hash];
+    int duplicate = 0;
+    
+    while(nodeptr != NULL)
+    {
+        printf("\n");
+        if(strcmp(nodeptr->val, str))
+        {
+            printf(nodeptr->val);
+            duplicate = 1;
+            break;
+        }
+      nodeptr = nodeptr->next;
+    }
+     */
+     
+    
+    
     if (head == NULL) {
         head = curr;
         head->next = NULL;
@@ -117,6 +144,7 @@ int insert(node* table[], char str[], int scope)
     table[hash] = head;
     strcpy(table[hash]->val, str);
     table[hash]->scopeId = scope;
+    
 
     // insert successful
     return 0;
@@ -143,10 +171,23 @@ int main()
     insert(symTable, "test", 3);
     insert(symTable, "hello", 3);
     insert(symTable, "anotherTest", 3);
+    insert(symTable, "anotherTest", 3);
     
     //display(symTable, 31);
     //find_in_all_scopes(symTable, 31, "hello");
-    find_in_current_scope(symTable, 31, 3);
+    
+    
+    if(find_in_current_scope(symTable, 31, 3, "test") == 1){ printf("yes"); }
+    /*
+    char test1[4];
+    char test2[5];
+    strcpy(test1, "hi");
+    strcpy(test2, "hfi");
+    if(!strcmp(test1, test2) != 0)
+    {
+        printf("yes");
+    }
+    */
     
 /*
     for (i = 0; i < 31; i++) {
