@@ -159,11 +159,15 @@ int main()
         else {                                  // all else are string values
             // process strings
             excep = find_in_current_scope(symTable, tableSize, scopeCount, buffer);
-            if (excep > 0)
+            if (excep > 0) {
                 printf("Duplicate found. Nothing inserted.\n");
+                continue;
+            }
             excep = insert(symTable, scopeCount, buffer);
-            if (excep == -1)
+            if (excep == -1) {
                 printf("Empty string found. Nothing inserted.\n");
+                continue;
+            }
         }
     }
 
