@@ -4,6 +4,20 @@
 #include "math.h"
 
 // Global variables
+char stack[1000000];
+int current = -1;
+int stackCount = -1;
+void push(char x)
+{
+    current++;
+    stack[current] = x;
+}
+void pop()
+{
+    current--;
+}
+
+
 typedef struct node {
     char val[100];
 	int scopeId;
@@ -12,10 +26,11 @@ typedef struct node {
 
 const int tableSize = 31;
 
-void displayScopes(struct node* array[], int arraySize)
+void displayScopes(struct node* array[], int arraySize, int highestScope)
 {
     struct node* nodeptr;
       int i;
+      /*
       int highestScope = 0;
       for(i = 0; i < arraySize; i++)
       {
@@ -32,6 +47,7 @@ void displayScopes(struct node* array[], int arraySize)
               }
           }
       }
+       */
       
       int j;
       int k;
@@ -219,30 +235,35 @@ int main()
 
     // loop through input file
     while (fscanf(fin, "%s", buffer) != EOF) {  // while not end of file
+        
         if (strcmp(buffer, "{") == 0) {         // if OPEN new scope
             // start a block
-            ++scopeCount;
+            stackCount++;
+            push(stackCount);
+            ++scopeCount;//printf("%c", stack[current]);
             //
         }
         else if (strcmp(buffer, "}") == 0) {    // if CLOSE current scope
             // end a block
             //
+            pop();
             --scopeCount;
         }
         else {                                  // all else are string values
             // process strings
-            excep = find_in_current_scope(symTable, tableSize, scopeCount, buffer);
-            if (excep > 0)
-                printf("Duplicate found. Nothing inserted.\n");
-            excep = insert(symTable, scopeCount, buffer);
-            if (excep == -1)
-                printf("Empty string found. Nothing inserted.\n");
+            excep = find_in_current_scope(symTable, tableSize, stack[current], buffer);
+            if (excep > 0){
+                printf("Duplicate found. Nothing inserted.\n");}
+            else if(excep == 0){
+                excep = insert(symTable, stack[current], buffer);}
+            else if (excep == -1){
+                printf("Empty string found. Nothing inserted.\n");}
         }
     }
 
     // print out symbol table
-    displayScopes(symTable, tableSize);
-    
+    displayScopes(symTable, tableSize, stackCount);
+    //display(symTable, tableSize);
 
 	return 0;
 }
