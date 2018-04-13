@@ -35,10 +35,10 @@ void display(struct node* array[], int arraySize)
       }
 }
 
-void find_in_all_scopes(struct node* array[], int arraySize, char str[])
+void find_in_all_scopes(struct node* array[], int arraySize, char str[], int listIndices[])
 {
       struct node* nodeptr;
-      int i;
+      int i, j = 0;
 
       for(i = 0; i < arraySize; i++)
       {
@@ -50,7 +50,9 @@ void find_in_all_scopes(struct node* array[], int arraySize, char str[])
                   {
                         if(!strcmp(nodeptr->val, str))
                         {
+                            listIndices[j] = nodeptr->scopeId;
                             printf("[%s %d] ", nodeptr->val, nodeptr->scopeId);
+                            j++;
                         }
 
                         nodeptr = nodeptr->next;
@@ -139,12 +141,16 @@ int main()
 	int scopeCount = 0;         // counter for scopes
 	int excep;                  // to handle exceptions
 	char buffer[100];           // string to hold read-in data
+	int foundIn[100];           // hold list of indices with matching string
 
-	fin = fopen("p0input.txt", "r");
+	fin = fopen("p0input2.txt", "r");
 
 	// initialize all pointers in table
 	for (i = 0; i < 31; i++) {
         symTable[i] = NULL;
+	}
+	for (i = 0; i < 100; i++) {
+        foundIn[i] = -1;
 	}
 
     // loop through input file
@@ -168,12 +174,20 @@ int main()
                 printf("Empty string found. Nothing inserted.\n");
                 continue;
             }
+
         }
     }
 
     // print out symbol table
     printf("\n\n");
     display(symTable, tableSize);
+
+    find_in_all_scopes(symTable, tableSize, "a", foundIn);
+    printf("\n\nFound in scopes:\n");
+    for (i = 0; i < sizeof(foundIn)/sizeof(int); i++) {
+        if (foundIn[i] != -1)
+            printf("%d\n", foundIn[i]);
+    }
 
 	return 0;
 }
