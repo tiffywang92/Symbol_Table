@@ -236,14 +236,14 @@ int main()
     // loop through input file
     while (fscanf(fin, "%s", buffer) != EOF) {  // while not end of file
         
-        if (strcmp(buffer, "{") == 0) {         // if OPEN new scope
+        if (strcmp(buffer, "{") == 0 || strcmp(buffer, "OPEN") == 0) {         // if OPEN new scope
             // start a block
             stackCount++;
             push(stackCount);
             ++scopeCount;//printf("%c", stack[current]);
             //
         }
-        else if (strcmp(buffer, "}") == 0) {    // if CLOSE current scope
+        else if (strcmp(buffer, "}") == 0 || strcmp(buffer, "CLOSE") == 0) {    // if CLOSE current scope
             // end a block
             //
             pop();
@@ -261,7 +261,7 @@ int main()
         }
     }
 
-    // print out symbol table
+    // print out symbol tablehttps://mail.google.com/mail/u/1/#inbox
     displayScopes(symTable, tableSize, stackCount);
     //display(symTable, tableSize);
 
