@@ -1,0 +1,16 @@
+Processing input file...
+
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Scope 0: a b c 
+Scope 1: a b c 
+Scope 2: a 
+Scope 3: a 
+

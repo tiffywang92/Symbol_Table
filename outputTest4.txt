@@ -1,0 +1,12 @@
+Processing input file...
+
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Scope 0: aa1122*&^ a &&&& b *** 
+Scope 1: B a b 
+

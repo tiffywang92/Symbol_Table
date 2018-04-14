@@ -1,0 +1,21 @@
+Processing input file...
+
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Duplicate found. Nothing inserted.
+Scope 0: abbab cd dc a ab ba 
+Scope 1: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ 
+Scope 2: AB AABB BA a ab ba 
+Scope 3: AB a ab 
+

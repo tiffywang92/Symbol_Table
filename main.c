@@ -1,9 +1,17 @@
+/*
+ GROUP MEMBERS
+ 
+ Lawrence Lee jq2773
+ Hanjun Zhou jn2294
+ Tiffany Wang rd7359
+ */
+
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
 #include "math.h"
 
-// Global variables
+// the stack and it's functions
 char stack[1000000];
 int current = -1;
 int stackCount = -1;
@@ -17,7 +25,7 @@ void pop()
     current--;
 }
 
-
+// Global Variables
 typedef struct node {
     char val[100];
     int scopeId;
@@ -26,13 +34,14 @@ typedef struct node {
 
 const int tableSize = 31;
 
+//displays every scope and every identifier within those scopes
 void displayScopes(struct node* array[], int arraySize, int highestScope)
 {
     struct node* nodeptr;
     int i, j, k;
     for(j = 0; j < highestScope + 1; j++)
     {
-        printf("Scope %d:", j);
+        printf("Scope %d: ", j);
           
         for(k = 0; k < arraySize; k++)
         {
@@ -53,7 +62,8 @@ void displayScopes(struct node* array[], int arraySize, int highestScope)
     }  
 }
 
-void display(struct node* array[], int arraySize)
+//the following displays the entire hash table and all of the linked list nodes
+void displayHashTable(struct node* array[], int arraySize)
 {
     struct node* nodeptr;
     int i;
@@ -74,29 +84,56 @@ void display(struct node* array[], int arraySize)
       }
 }
 
-void find_in_all_scopes(struct node* array[], int arraySize, char str[])
+//puts specific identifier's scope value onto array
+void find_in_all_scopes(struct node* array[], int arraySize, char str[], int listIndices[])
 {
-    struct node* nodeptr;
-    int i;
-    for(i = 0; i < arraySize; i++)
-    {
-        printf("[%d]", i);
-        if(array[i] != NULL)
-        {
-            nodeptr = array[i];
-            while(nodeptr != NULL)
+      struct node* nodeptr;
+      int i, j = 0;
+
+      for(i = 0; i < arraySize; i++)
+      {
+            printf("[%d]", i);
+            if(array[i] != NULL)
             {
-                if(!strcmp(nodeptr->val, str))
-                {
-                    printf("[%s %d] ", nodeptr->val, nodeptr->scopeId);
-                }
-                nodeptr = nodeptr->next;
-                }
+                  nodeptr = array[i];
+                  while(nodeptr != NULL)
+                  {
+                        if(!strcmp(nodeptr->val, str))
+                        {
+                            listIndices[j] = nodeptr->scopeId;
+                            printf("[%s %d] ", nodeptr->val, nodeptr->scopeId);
+                            j++;
+                        }
+
+                        nodeptr = nodeptr->next;
+                  }
             }
             printf("\n");
       }
 }
 
+//method for determining a identifier's hash value
+int hashMethod(char str[])
+{
+    int i, j, hash;
+    int length = strlen(str);
+    int sum = 0;
+    int product = 1;
+    
+    for (i = 0; i < length; i++)
+    {
+        for (j = length; j > 0; j--)
+        {
+            product *= 128;
+        }
+        sum += (str[i] - '\0') * product;
+    }
+    
+    hash = (int)sum % 31;
+    return hash;
+}
+
+//checks if identifier already exists in a specific scope
 int find_in_current_scope(struct node* array[], int arraySize, int currentScope, char str[])
 {   
     struct node* nodeptr;
@@ -118,26 +155,7 @@ int find_in_current_scope(struct node* array[], int arraySize, int currentScope,
     
 }
 
-int hashMethod(char str[])
-{
-    int i, j, hash;
-    int length = sizeof(str);
-    int sum = 0;
-    int product = 1;
-    
-    for (i = 0; i < length; i++)
-    {
-        for (j = length; j > 0; j--)
-        {
-            product *= 128;
-        }
-        sum += (str[i] - '\0') * product;
-    }
-    
-    hash = (int)sum % 31;
-    return hash;
-}
-
+//insert a identifier along with it's scope onto a node in the hash table
 int insert(node* table[], int scope, char str[])
 {
     // check if string is empty
@@ -151,9 +169,7 @@ int insert(node* table[], int scope, char str[])
     int sum = 0;                        // hold a sum for hash
     int product = 1;                    // hold a product for exponents
 
-
     hash = hashMethod(str);
-    
     
     // insert the string
     head = table[hash];
@@ -181,16 +197,22 @@ int main()
     int scopeCount = 0;         // counter for scopes
     int excep;                  // to handle exceptions
     char buffer[100];           // string to hold read-in data
+    int foundIn[100];
 
-    fin = fopen("p0input.txt", "r");
+    fin = fopen("inputTest1.txt", "r");
 
     // initialize all pointers in table
     for (i = 0; i < 31; i++)
     {
         symTable[i] = NULL;
     }
+    for(i = 0; i < 100; i++)
+    {
+        foundIn[i] = -1;
+    }
 
     // loop through input file
+    printf("Processing input file...\n\n");
     while (fscanf(fin, "%s", buffer) != EOF) {  // while not end of file
         
         if (strcmp(buffer, "{") == 0 || strcmp(buffer, "OPEN") == 0) {         // if OPEN new scope
@@ -220,7 +242,20 @@ int main()
 
     // print out symbol table
     displayScopes(symTable, tableSize, stackCount);
-    //display(symTable, tableSize);
+    //displayHashTable(symTable, tableSize);
+
+    
+    //the following calls the find_in_all_scopes function and
+    //returns a list of scopes in which the identifier is found
+    /*
+    find_in_all_scopes(symTable, tableSize, "a", foundIn);
+    printf("\n\nFound in scopes:\n");
+    for (i = 0; i < sizeof(foundIn)/sizeof(int); i++) {
+        if (foundIn[i] != -1)
+            printf("%d\n", foundIn[i]);
+    }
+     */
+            
 
     return 0;
 }

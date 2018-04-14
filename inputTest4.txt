@@ -1,0 +1,9 @@
+OPEN
+aa1122*&^ a a a
+*** *** &&&&
+OPEN
+a b B B a B
+CLOSE
+a
+b
+CLOSE

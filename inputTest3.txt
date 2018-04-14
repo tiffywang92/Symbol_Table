@@ -1,0 +1,1 @@
+OPEN a a a b b b OPEN a b c CLOSE OPEN a OPEN a CLOSE a a CLOSE a a b c CLOSE
