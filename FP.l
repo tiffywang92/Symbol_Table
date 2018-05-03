@@ -28,7 +28,7 @@ whitespace		[ \t\n]+
 %%
 {Boolean}		printf("Boolean: %s\n", yytext);
 {keywords}		printf("Keywords: %s\n", yytext);
-{identifier}		printf("Identifier: %s\n", yytext); insert(symTable, stackCurrent, yytext);
+{identifier}		printf("Identifier: %s\n", yytext); if (find_in_current_scope(symTable, stackCurrent, yytext) < 0) insert(symTable, stackCurrent, yytext); else printf("Duplicate found.\n");
 {integer}		printf("Integer: %d\n", atoi(yytext));
 {float}			printf("Float: %f\n", atof(yytext));
 {character-string}	printf("Character-String: %s\n", yytext);
