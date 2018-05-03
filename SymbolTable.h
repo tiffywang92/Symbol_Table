@@ -152,7 +152,7 @@ int find_in_current_scope(struct node* array[], int arraySize, int currentScope,
         }
         nodeptr = nodeptr->next;
     }
-    
+    return -1;
 }
 
 //insert a identifier along with it's scope onto a node in the hash table
