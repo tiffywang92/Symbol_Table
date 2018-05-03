@@ -134,7 +134,7 @@ int hashMethod(char str[])
 }
 
 //checks if identifier already exists in a specific scope
-int find_in_current_scope(struct node* array[], int arraySize, int currentScope, char str[])
+int find_in_current_scope(struct node* array[], int currentScope, char str[])
 {   
     struct node* nodeptr;
     int i, index = 0, hash;
