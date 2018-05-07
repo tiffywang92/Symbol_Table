@@ -36,6 +36,78 @@ whitespace		[ \t\n]+
 {symbols}		printf("Symbols: %s\n", yytext); scopeFunction(yytext);
 %%
 
+int convertInt(char str[])
+{
+	int i = 0;
+	int val = 0;
+	
+	while (str[i] != '\0')
+	{
+		if (isspace(str[i]) && str[i+1] != '\0')
+		{
+			str[i] = str[i+1];
+		}
+		else if (isdigit(str[i]))
+		{
+			val += str[i] - '0';
+			if (isdigit(str[i+1]))
+				val *= 10;
+		}
+		else;
+		i++;
+	}
+	if (str[0] == '-')
+		val *= -1;
+	
+	return val;
+}
+
+float convertFlt(char str[])
+{
+	int i = 0;
+	int point = 0;
+	float val = 0.0;
+	float trail = 0.0;
+	
+	while (str[i] != '\0')
+	{
+		if (isspace(str[i]) && str[i+1] != '\0')
+		{
+			str[i] = str[i+1];
+		}
+		else if (isdigit(str[i]))
+		{
+			val += (float)(str[i] - '0');
+			if (isdigit(str[i+1]))
+				val *= 10.0;
+		}
+		else if (str[i] == '.')
+		{
+			point = ++i;
+			while (isdigit(str[point]))
+			{
+				trail += (float)(str[point] - '0');
+				if (isdigit(str[point+1]))
+					trail *= 10;
+				point++;
+			}
+			while (isdigit(str[i]))
+			{
+				trail *= 0.1;
+				i++;
+			}
+			val += trail;
+			break; // finished scanning floating digits
+		}
+		else;
+		i++;
+	}
+	if (str[0] == '-')
+		val *= -1;
+	
+	return val;
+}
+
 void scopeFunction(char str[])
 {
 	if(str[0] == '{')
